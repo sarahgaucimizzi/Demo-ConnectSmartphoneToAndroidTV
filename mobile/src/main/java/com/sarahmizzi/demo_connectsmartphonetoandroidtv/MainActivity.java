@@ -19,7 +19,6 @@ public class MainActivity extends Activity {
     private int hostPort;
     private NsdManager mNsdManager;
     private NsdManager.DiscoveryListener mDiscoveryListener;
-    private NsdManager.ResolveListener mResolveListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +26,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mNsdManager = (NsdManager) getSystemService(NSD_SERVICE);
-        mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
 
         mDiscoveryListener = new NsdManager.DiscoveryListener() {
 
@@ -55,7 +53,29 @@ public class MainActivity extends Activity {
                 } else {
                     Log.d(TAG, "Diff Machine : " + service.getServiceName());
                     // connect to the service and obtain serviceInfo
-                    mNsdManager.resolveService(service, mResolveListener);
+                    mNsdManager.resolveService(service, new NsdManager.ResolveListener() {
+
+                        @Override
+                        public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
+                            // Called when the resolve fails. Use the error code to debug.
+                            Log.e(TAG, "Resolve failed " + errorCode);
+                            Log.e(TAG, "serivce = " + serviceInfo);
+                        }
+
+                        @Override
+                        public void onServiceResolved(NsdServiceInfo serviceInfo) {
+                            Log.d(TAG, "Resolve Succeeded. " + serviceInfo);
+
+                            if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
+                                Log.d(TAG, "Same IP.");
+                                return;
+                            }
+
+                            // Obtain port and IP
+                            hostPort = serviceInfo.getPort();
+                            hostAddress = serviceInfo.getHost();
+                        }
+                    });
                 }
             }
 
@@ -84,29 +104,7 @@ public class MainActivity extends Activity {
             }
         };
 
-        mResolveListener = new NsdManager.ResolveListener() {
-
-            @Override
-            public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
-                // Called when the resolve fails. Use the error code to debug.
-                Log.e(TAG, "Resolve failed " + errorCode);
-                Log.e(TAG, "serivce = " + serviceInfo);
-            }
-
-            @Override
-            public void onServiceResolved(NsdServiceInfo serviceInfo) {
-                Log.d(TAG, "Resolve Succeeded. " + serviceInfo);
-
-                if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
-                    Log.d(TAG, "Same IP.");
-                    return;
-                }
-
-                // Obtain port and IP
-                hostPort = serviceInfo.getPort();
-                hostAddress = serviceInfo.getHost();
-            }
-        };
+        mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
     }
 
     @Override
@@ -121,7 +119,7 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         if(mNsdManager != null){
-            mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+            //mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
         }
     }
 
