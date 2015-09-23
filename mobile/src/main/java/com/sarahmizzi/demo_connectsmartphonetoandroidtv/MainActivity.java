@@ -6,11 +6,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends Activity {
+    private NsdHelper mNsdHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mNsdHelper = new NsdHelper(getApplicationContext());
+        mNsdHelper.initializeDiscoveryListener();
     }
 
     @Override
@@ -34,4 +37,29 @@ public class MainActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onPause() {
+        if (mNsdHelper != null) {
+            mNsdHelper.tearDown();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mNsdHelper != null) {
+            mNsdHelper.registerService(mConnection.getLocalPort());
+            mNsdHelper.initializeDiscoveryListener();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mNsdHelper.tearDown();
+        mConnection.tearDown();
+        super.onDestroy();
+    }
+
 }
