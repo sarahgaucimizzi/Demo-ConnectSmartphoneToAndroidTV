@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Demo - Connect Smartphone to Android TV</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="title">Discover Devices</string>
+    <string name="dialog_title">Discovered</string>
     <string name="action_settings">Settings</string>
 </resources>
