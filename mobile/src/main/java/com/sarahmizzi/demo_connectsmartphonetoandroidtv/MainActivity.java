@@ -48,7 +48,7 @@ public class MainActivity extends Activity{
     @Override
     protected void onPause() {
         if(mNsdManager != null){
-            mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+            // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
         }
         super.onPause();
     }
@@ -57,14 +57,14 @@ public class MainActivity extends Activity{
     protected void onResume() {
         super.onResume();
         if(mNsdManager != null){
-            //mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+            // mNsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
         }
     }
 
     @Override
     protected void onDestroy() {
         if(mNsdManager != null){
-            mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+            // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
         }
         super.onDestroy();
     }
@@ -191,6 +191,6 @@ public class MainActivity extends Activity{
             public void run() {
                 mAdapter.refresh(mDeviceList);
             }
-        }, 5000);
+        }, 1000);
     }
 }
