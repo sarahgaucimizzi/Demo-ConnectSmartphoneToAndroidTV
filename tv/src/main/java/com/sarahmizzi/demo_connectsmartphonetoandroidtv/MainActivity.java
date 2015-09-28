@@ -68,7 +68,6 @@ public class MainActivity extends Activity {
         };
 
         registerService(9000);
-
     }
 
     @Override
@@ -83,14 +82,40 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         if(mNsdManager != null){
-    //        registerService(9000);
+            // Setup registration listener
+            mRegistrationListener = new NsdManager.RegistrationListener(){
+                @Override
+                public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
+                    // Registration failed! Put debugging code here to determine why.
+                }
+
+                @Override
+                public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
+                    // Unregistration failed. Put debugging code here to determine why.
+                }
+
+                @Override
+                public void onServiceRegistered(NsdServiceInfo serviceInfo) {
+                    String mServiceName = serviceInfo.getServiceName();
+                    SERVICE_NAME = mServiceName;
+                    Log.d(TAG, "Registered name : " + mServiceName);
+                }
+
+                @Override
+                public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
+                    // Service has been unregistered. This only happens when you call NsdManager.unregisterService() and pass in this listener.
+                    Log.d(TAG, "Service unregistered: " + serviceInfo.getServiceName());
+                }
+            };
+
+            registerService(9000);
         }
     }
 
     @Override
     protected void onDestroy() {
         if(mNsdManager != null){
-    //        mNsdManager.unregisterService(mRegistrationListener);
+           mNsdManager.unregisterService(mRegistrationListener);
         }
         super.onDestroy();
     }
