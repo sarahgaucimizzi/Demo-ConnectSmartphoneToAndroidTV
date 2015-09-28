@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
      * Called when the activity is first created.
      */
     private final String TAG = MainActivity.class.getSimpleName();
-    private String SERVICE_NAME = "Server Device";
+    private String SERVICE_NAME = "Server Device - TV";
     private String SERVICE_TYPE = "_http._tcp.";
     private NsdManager mNsdManager;
     private NsdManager.RegistrationListener mRegistrationListener;
@@ -40,7 +40,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-        registerService(9000);
 
         // Setup registration listener
         mRegistrationListener = new NsdManager.RegistrationListener(){
@@ -67,6 +66,9 @@ public class MainActivity extends Activity {
                 Log.d(TAG, "Service unregistered: " + serviceInfo.getServiceName());
             }
         };
+
+        registerService(9000);
+
     }
 
     @Override
@@ -81,14 +83,14 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         if(mNsdManager != null){
-            registerService(9000);
+    //        registerService(9000);
         }
     }
 
     @Override
     protected void onDestroy() {
         if(mNsdManager != null){
-            mNsdManager.unregisterService(mRegistrationListener);
+    //        mNsdManager.unregisterService(mRegistrationListener);
         }
         super.onDestroy();
     }

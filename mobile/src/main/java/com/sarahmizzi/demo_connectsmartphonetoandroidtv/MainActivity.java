@@ -11,17 +11,14 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toolbar;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity{
-
-
     private final String TAG = MainActivity.class.getSimpleName();
-    private String SERVICE_NAME = "Client Device";
+    private String SERVICE_NAME = "Client Device - Mobile";
     private String SERVICE_TYPE = "_http._tcp.";
 
     private InetAddress hostAddress;
