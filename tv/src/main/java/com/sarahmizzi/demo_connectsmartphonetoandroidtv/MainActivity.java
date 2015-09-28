@@ -28,52 +28,21 @@ public class MainActivity extends Activity {
     /**
      * Called when the activity is first created.
      */
-    private final String TAG = MainActivity.class.getSimpleName();
-    private String SERVICE_NAME = "Server Device - TV";
-    private String SERVICE_TYPE = "_http._tcp.";
-    private NsdManager mNsdManager;
-    private NsdManager.RegistrationListener mRegistrationListener;
+    public ServerNsdHelper mNsdHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-
-        // Setup registration listener
-        mRegistrationListener = new NsdManager.RegistrationListener(){
-            @Override
-            public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-                // Registration failed! Put debugging code here to determine why.
-            }
-
-            @Override
-            public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-                // Unregistration failed. Put debugging code here to determine why.
-            }
-
-            @Override
-            public void onServiceRegistered(NsdServiceInfo serviceInfo) {
-                String mServiceName = serviceInfo.getServiceName();
-                SERVICE_NAME = mServiceName;
-                Log.d(TAG, "Registered name : " + mServiceName);
-            }
-
-            @Override
-            public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-                // Service has been unregistered. This only happens when you call NsdManager.unregisterService() and pass in this listener.
-                Log.d(TAG, "Service unregistered: " + serviceInfo.getServiceName());
-            }
-        };
-
-        registerService(9000);
+        mNsdHelper = new ServerNsdHelper(getApplicationContext());
+        mNsdHelper.registerService(9000);
     }
 
     @Override
     protected void onPause() {
-        if (mNsdManager != null){
-            mNsdManager.unregisterService(mRegistrationListener);
+        if (mNsdHelper!= null){
+            mNsdHelper.unregisterService();
         }
         super.onPause();
     }
@@ -81,50 +50,18 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(mNsdManager != null){
-            // Setup registration listener
-            mRegistrationListener = new NsdManager.RegistrationListener(){
-                @Override
-                public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-                    // Registration failed! Put debugging code here to determine why.
-                }
-
-                @Override
-                public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-                    // Unregistration failed. Put debugging code here to determine why.
-                }
-
-                @Override
-                public void onServiceRegistered(NsdServiceInfo serviceInfo) {
-                    String mServiceName = serviceInfo.getServiceName();
-                    SERVICE_NAME = mServiceName;
-                    Log.d(TAG, "Registered name : " + mServiceName);
-                }
-
-                @Override
-                public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-                    // Service has been unregistered. This only happens when you call NsdManager.unregisterService() and pass in this listener.
-                    Log.d(TAG, "Service unregistered: " + serviceInfo.getServiceName());
-                }
-            };
-
-            registerService(9000);
+        if(mNsdHelper != null){
+            mNsdHelper.registerService(9000);
         }
     }
 
     @Override
     protected void onDestroy() {
-        if(mNsdManager != null){
-           mNsdManager.unregisterService(mRegistrationListener);
+        if(mNsdHelper!= null){
+           mNsdHelper.unregisterService();
         }
         super.onDestroy();
     }
 
-    public void registerService(int port){
-        NsdServiceInfo serviceInfo = new NsdServiceInfo();
-        serviceInfo.setServiceName(SERVICE_NAME);
-        serviceInfo.setServiceType(SERVICE_TYPE);
-        serviceInfo.setPort(port);
-        mNsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
-    }
+
 }
