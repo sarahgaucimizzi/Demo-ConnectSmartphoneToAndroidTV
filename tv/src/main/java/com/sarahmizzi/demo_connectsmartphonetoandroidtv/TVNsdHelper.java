@@ -5,22 +5,24 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 
-import java.net.ServerSocket;
-
 /**
  * Created by Sarah on 28-Sep-15.
  */
-public class ServerNsdHelper {
-    private final String TAG = MainActivity.class.getSimpleName();
-    private String SERVICE_NAME = "Server Device - TV";
-    private String SERVICE_TYPE = "_http._tcp.";
-    private NsdManager mNsdManager;
-    private NsdManager.RegistrationListener mRegistrationListener;
-    private String mServiceName;
-    private Context mContext;
+public class TVNsdHelper {
+    Context mContext;
 
-    public ServerNsdHelper(Context context){
+    NsdManager mNsdManager;
+    NsdManager.RegistrationListener mRegistrationListener;
+
+    private static final String SERVICE_TYPE = "_http._tcp.";
+
+    public static final String TAG = MainActivity.class.getSimpleName();
+    public String mServiceName = "TV";
+
+
+    public TVNsdHelper(Context context){
         mContext = context;
+        mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
     }
 
     public void initializeRegistrationListener(){
@@ -28,40 +30,33 @@ public class ServerNsdHelper {
         mRegistrationListener = new NsdManager.RegistrationListener(){
             @Override
             public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-                // Registration failed! Put debugging code here to determine why.
             }
 
             @Override
             public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-                // Unregistration failed. Put debugging code here to determine why.
             }
 
             @Override
             public void onServiceRegistered(NsdServiceInfo serviceInfo) {
                 mServiceName = serviceInfo.getServiceName();
-                SERVICE_NAME = mServiceName;
-                Log.d(TAG, "Registered name : " + mServiceName);
+                Log.d(TAG, "Service registered: " + serviceInfo.getServiceName());
             }
 
             @Override
             public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-                // Service has been unregistered. This only happens when you call NsdManager.unregisterService() and pass in this listener.
                 Log.e(TAG, "Service unregistered: " + serviceInfo.getServiceName());
             }
         };
     }
 
     public void registerService(int port){
-        initializeRegistrationListener();
-
         NsdServiceInfo serviceInfo = new NsdServiceInfo();
-        serviceInfo.setServiceName(SERVICE_NAME);
+        serviceInfo.setServiceName(mServiceName);
         serviceInfo.setServiceType(SERVICE_TYPE);
         serviceInfo.setPort(port);
 
-        mNsdManager = (NsdManager) mContext.getSystemService(Context.NSD_SERVICE);
-
-        mNsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
+        mNsdManager.registerService(
+                serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
     }
 
     public void unregisterService(){

@@ -15,11 +15,7 @@
 package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.nsd.NsdManager;
-import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
-import android.util.Log;
 
 /*
  * MainActivity class that loads MainFragment
@@ -28,40 +24,36 @@ public class MainActivity extends Activity {
     /**
      * Called when the activity is first created.
      */
-    public ServerNsdHelper mNsdHelper;
+    public TVNsdHelper mTVNsdHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mNsdHelper = new ServerNsdHelper(getApplicationContext());
-        mNsdHelper.registerService(9000);
+        mTVNsdHelper = new TVNsdHelper(getApplicationContext());
+        mTVNsdHelper.initializeRegistrationListener();
+        mTVNsdHelper.registerService(9000);
     }
 
     @Override
     protected void onPause() {
-        if (mNsdHelper!= null){
-            mNsdHelper.unregisterService();
-        }
+        mTVNsdHelper.unregisterService();
         super.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(mNsdHelper != null){
-            mNsdHelper.registerService(9000);
+        if(mTVNsdHelper != null){
+            mTVNsdHelper.initializeRegistrationListener();
+            mTVNsdHelper.registerService(9000);
         }
     }
 
     @Override
     protected void onDestroy() {
-        if(mNsdHelper!= null){
-           mNsdHelper.unregisterService();
-        }
+        mTVNsdHelper.unregisterService();
         super.onDestroy();
     }
-
-
 }

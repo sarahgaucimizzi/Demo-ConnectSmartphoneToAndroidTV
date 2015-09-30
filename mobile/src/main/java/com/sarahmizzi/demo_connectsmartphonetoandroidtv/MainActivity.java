@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity{
-    public ClientNsdHelper mNsdHelper;
+    public MobileNsdHelper mMobileNsdHelper;
 
     public static List<String> mDeviceList;
     private RecyclerView mRecyclerView;
@@ -21,10 +21,10 @@ public class MainActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mNsdHelper = new ClientNsdHelper(getApplicationContext());
+        mMobileNsdHelper = new MobileNsdHelper(getApplicationContext());
 
         // Start service discovery
-        mNsdHelper.initializeNsd();
+        mMobileNsdHelper.initializeNsd();
 
         // Setup recycler view
         setupRecyclerView();
@@ -54,8 +54,8 @@ public class MainActivity extends Activity{
 
     @Override
     protected void onPause() {
-        if(mNsdHelper != null){
-            mNsdHelper.tearDown();
+        if(mMobileNsdHelper != null){
+            mMobileNsdHelper.tearDown();
         }
         super.onPause();
     }
@@ -63,16 +63,16 @@ public class MainActivity extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        if(mNsdHelper != null){
-            mNsdHelper.registerService(9000); //mConnection.getLocalPort());
-            mNsdHelper.discoverServices();
+        if(mMobileNsdHelper != null){
+            mMobileNsdHelper.registerService(9000); //mConnection.getLocalPort());
+            mMobileNsdHelper.discoverServices();
         }
         setupRecyclerView();
     }
 
     @Override
     protected void onDestroy() {
-        mNsdHelper.tearDown();
+        mMobileNsdHelper.tearDown();
         //mConnection.tearDown();
         super.onDestroy();
     }

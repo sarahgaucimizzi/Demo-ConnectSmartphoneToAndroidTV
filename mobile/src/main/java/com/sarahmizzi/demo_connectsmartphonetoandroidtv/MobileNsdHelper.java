@@ -8,7 +8,7 @@ import android.util.Log;
 /**
  * Created by Sarah on 22-Sep-15.
  */
-public class ClientNsdHelper {
+public class MobileNsdHelper {
     Context mContext;
 
     NsdManager mNsdManager;
@@ -18,12 +18,12 @@ public class ClientNsdHelper {
 
     public static final String SERVICE_TYPE = "_http._tcp.";
 
-    public static final String TAG = "Client Device - Mobile";
-    public String mServiceName = "Network Service Discovery";
+    public static final String TAG = MainActivity.class.getSimpleName();
+    public String mServiceName = "Client Device - Mobile";
 
     NsdServiceInfo mService;
 
-    public ClientNsdHelper(Context context) {
+    public MobileNsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
     }

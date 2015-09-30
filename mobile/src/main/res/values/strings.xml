@@ -4,4 +4,7 @@
     <string name="title">Discover Devices</string>
     <string name="dialog_title">Discovered</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_server">Server</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>
