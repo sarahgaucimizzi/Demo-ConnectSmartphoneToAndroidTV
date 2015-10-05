@@ -6,11 +6,11 @@
     android:orientation="vertical"
     tools:context="com.sarahmizzi.demo_connectsmartphonetoandroidtv.Server">
 
-<TextView
-    android:id="@+id/text2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="" >
-</TextView>
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" >
+    </TextView>
 
 </LinearLayout>
