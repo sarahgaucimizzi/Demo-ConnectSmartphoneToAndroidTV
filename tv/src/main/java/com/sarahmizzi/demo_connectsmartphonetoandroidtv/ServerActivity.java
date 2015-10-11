@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
@@ -18,7 +19,7 @@ import java.util.Enumeration;
 
 public class ServerActivity extends Activity {
     public static final int SERVERPORT = 8080;
-    public static String SERVERIP = "10.0.2.15";
+    public static String SERVERIP;
 
     private TextView serverStatus;
     private Handler handler = new Handler();
@@ -32,22 +33,22 @@ public class ServerActivity extends Activity {
 
         SERVERIP = getLocalIpAddress();
 
-        Thread fst = new Thread(new ServerThread());
-        fst.start();
+        Thread thread = new Thread(new ServerThread());
+        thread.start();
     }
 
-    public class ServerThread implements Runnable{
-        public void run(){
-            try{
-                if (SERVERIP != null){
+    public class ServerThread implements Runnable {
+        public void run() {
+            try {
+                if (SERVERIP != null) {
                     handler.post(new Runnable() {
-                       @Override
-                    public void run(){
-                           serverStatus.setText("Listening on IP: " + SERVERIP);
-                       }
+                        @Override
+                        public void run() {
+                            serverStatus.setText("Listening on IP: " + SERVERIP);
+                        }
                     });
                     serverSocket = new ServerSocket(SERVERPORT);
-                    while(true){
+                    while (true) {
                         // Listen for incoming clients
                         Socket client = serverSocket.accept();
                         handler.post(new Runnable() {
@@ -57,32 +58,30 @@ public class ServerActivity extends Activity {
                             }
                         });
 
-                        try{
+                        try {
                             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                             String line = null;
-                            while((line = in.readLine()) != null){
+                            while ((line = in.readLine()) != null) {
                                 Log.d("ServerActivity", line);
                                 handler.post(new Runnable() {
                                     @Override
-                                public void run(){
+                                    public void run() {
                                         // TODO
                                     }
                                 });
                             }
                             break;
-                        }
-                        catch (Exception e){
-                            handler.post(new Runnable(){
+                        } catch (final Exception e) {
+                            handler.post(new Runnable() {
                                 @Override
-                            public void run(){
-                                    serverStatus.setText("Oops. Connection interrupted. Please reconnect your phones.");
+                                public void run() {
+                                    serverStatus.setText("Oops. Connection interrupted. Please reconnect your devices. " + e.getMessage());
                                 }
                             });
                             e.printStackTrace();
                         }
                     }
-                }
-                else{
+                } else {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -90,12 +89,11 @@ public class ServerActivity extends Activity {
                         }
                     });
                 }
-            }
-            catch (Exception e){
+            } catch (final Exception e) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        serverStatus.setText("Error");
+                        serverStatus.setText("Error " + e.getMessage());
                     }
                 });
                 e.printStackTrace();
@@ -103,19 +101,18 @@ public class ServerActivity extends Activity {
         }
     }
 
-    private String getLocalIpAddress(){
-        try{
-            for(Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+    private String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
-                for(Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
-                    if(!inetAddress.isLoopbackAddress()){
+                    if (!inetAddress.isLoopbackAddress()) {
                         return inetAddress.getHostAddress().toString();
                     }
                 }
             }
-        }
-        catch(SocketException ex){
+        } catch (SocketException ex) {
             Log.e("ServerActivity", ex.toString());
         }
 
@@ -123,13 +120,14 @@ public class ServerActivity extends Activity {
     }
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         super.onStop();
-        try{
-            serverSocket.close();
-        }
-        catch(IOException e){
-            e.printStackTrace();
+        if (serverSocket != null) {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

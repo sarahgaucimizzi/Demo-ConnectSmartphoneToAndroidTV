@@ -21,7 +21,6 @@ public class ClientActivity extends Activity {
     private Button connectPhones;
     private String serverIpAddress = "";
     private boolean connected = false;
-    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +62,14 @@ public class ClientActivity extends Activity {
                         Log.d("ClientActivity", "C: Sent.");
                     }
                     catch (Exception e){
-                        Log.e("ClientActivity", "S: Error", e);
+                        Log.e("ClientActivity", "S: Error" + e.getMessage(), e);
                     }
                 }
                 socket.close();
                 Log.d("ClientActivity", "C: Closed.");
             }
             catch (Exception e){
-                Log.e("ClientActivity", "C: Error", e);
+                Log.e("ClientActivity", "C: Error" + e.getMessage(), e);
                 connected = false;
             }
         }
