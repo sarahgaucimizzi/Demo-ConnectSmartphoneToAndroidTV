@@ -1,5 +1,9 @@
 package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 
+/*
+    Tutorial: https://thinkandroid.wordpress.com/2010/03/27/incorporating-socket-programming-into-your-applications/
+ */
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -20,6 +24,8 @@ public class ClientActivity extends Activity {
     private EditText serverIp;
     private Button connectPhones;
     private String serverIpAddress = "";
+    private EditText serverMessage;
+    private Button sendMessage;
     private boolean connected = false;
 
     @Override
@@ -30,14 +36,16 @@ public class ClientActivity extends Activity {
         serverIp = (EditText) findViewById(R.id.server_ip);
         connectPhones = (Button) findViewById(R.id.connect_phones);
         connectPhones.setOnClickListener(connectListener);
+        serverMessage = (EditText) findViewById(R.id.server_message);
+        sendMessage = (Button) findViewById(R.id.send_message);
     }
 
     private View.OnClickListener connectListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(!connected){
+            if (!connected) {
                 serverIpAddress = serverIp.getText().toString();
-                if(!serverIpAddress.equals("")){
+                if (!serverIpAddress.equals("")) {
                     Thread cThread = new Thread(new ClientThread());
                     cThread.start();
                 }
@@ -45,30 +53,28 @@ public class ClientActivity extends Activity {
         }
     };
 
-    public class ClientThread implements Runnable{
+    public class ClientThread implements Runnable {
         @Override
         public void run() {
-            try{
+            try {
                 InetAddress serverAddr = InetAddress.getByName(serverIpAddress);
                 Log.d("ClientActivity", "C: Connecting...");
                 Socket socket = new Socket(serverAddr, SERVERPORT);
                 connected = true;
-                while (connected){
-                    try{
+                while (connected) {
+                    try {
                         Log.d("ClientActivity", "C: Sending command.");
                         PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
                         // Issue Commands
-                        out.println("Hey Server!");
+                        out.println(serverMessage.getText().toString());
                         Log.d("ClientActivity", "C: Sent.");
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         Log.e("ClientActivity", "S: Error" + e.getMessage(), e);
                     }
                 }
                 socket.close();
                 Log.d("ClientActivity", "C: Closed.");
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.e("ClientActivity", "C: Error" + e.getMessage(), e);
                 connected = false;
             }

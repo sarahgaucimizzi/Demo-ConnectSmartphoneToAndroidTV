@@ -1,5 +1,9 @@
 package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 
+/*
+    Tutorial: http://examples.javacodegeeks.com/android/core/socket-core/android-socket-example/
+ */
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -51,35 +55,30 @@ public class Client extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onClick(View view){
-        try{
+    public void onClick(View view) {
+        try {
             EditText et = (EditText) findViewById(R.id.EditText01);
             String str = et.getText().toString();
             PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             out.println(str);
-        }
-        catch (UnknownHostException e){
+        } catch (UnknownHostException e) {
             e.printStackTrace();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     class ClientThread implements Runnable {
         @Override
-        public void run(){
-            try{
+        public void run() {
+            try {
                 InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
                 socket = new Socket(serverAddr, SERVERPORT);
-            }
-            catch (UnknownHostException e1){
+            } catch (UnknownHostException e1) {
                 e1.printStackTrace();
-            }
-            catch (IOException e1){
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         }

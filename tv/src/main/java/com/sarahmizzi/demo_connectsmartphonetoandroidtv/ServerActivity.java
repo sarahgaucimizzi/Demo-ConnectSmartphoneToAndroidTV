@@ -1,5 +1,9 @@
 package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 
+/*
+    Tutorial: https://thinkandroid.wordpress.com/2010/03/27/incorporating-socket-programming-into-your-applications/
+ */
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -60,13 +64,22 @@ public class ServerActivity extends Activity {
 
                         try {
                             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                            String line = null;
-                            while ((line = in.readLine()) != null) {
+                            final String line = in.readLine();
+                            while (line != null) {
                                 Log.d("ServerActivity", line);
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         // TODO
+                                        if(line.equals("HI")){
+                                            serverStatus.setText("Hello there!");
+                                        }
+                                        else if(line.equals("How are you?")){
+                                            serverStatus.setText("Fine thanks.");
+                                        }
+                                        else if(line.equals("code123")){
+                                            serverStatus.setText("Password correct. Welcome back.");
+                                        }
                                     }
                                 });
                             }

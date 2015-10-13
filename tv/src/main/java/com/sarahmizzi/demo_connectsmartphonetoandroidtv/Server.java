@@ -1,5 +1,9 @@
 package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 
+/*
+    Tutorial: http://examples.javacodegeeks.com/android/core/socket-core/android-socket-example/
+ */
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

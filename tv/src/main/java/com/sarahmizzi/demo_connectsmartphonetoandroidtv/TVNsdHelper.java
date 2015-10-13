@@ -1,5 +1,9 @@
 package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 
+/*
+    Tutorial: http://developer.android.com/training/connect-devices-wirelessly/nsd.html
+ */
+
 import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;

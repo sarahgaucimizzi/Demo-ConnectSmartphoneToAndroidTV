@@ -1,5 +1,9 @@
 package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 
+/*
+    Tutorial: http://developer.android.com/training/connect-devices-wirelessly/nsd.html
+ */
+
 import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
@@ -54,8 +58,8 @@ public class MobileNsdHelper {
                 }
 
                 // Update list
-                if((!MainActivity.mDeviceList.contains(service.getServiceName())) && (!service.getServiceName().equals(mServiceName))) {
-                    MainActivity.mDeviceList.add(service.getServiceName());
+                if((!NSDActivity.mDeviceList.contains(service.getServiceName())) && (!service.getServiceName().equals(mServiceName))) {
+                    NSDActivity.mDeviceList.add(service.getServiceName());
                 }
             }
 
@@ -66,7 +70,7 @@ public class MobileNsdHelper {
                     mService = null;
                 }
                 // Update list
-                MainActivity.mDeviceList.remove(MainActivity.mDeviceList.indexOf(service.getServiceName()));
+                NSDActivity.mDeviceList.remove(NSDActivity.mDeviceList.indexOf(service.getServiceName()));
             }
 
             @Override
