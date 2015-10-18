@@ -34,18 +34,16 @@ public class ConnectFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_connect, container, false);
         serverIp = (EditText) view.findViewById(R.id.server_ip);
         connectPhones = (Button) view.findViewById(R.id.connect_phones);
-        connectPhones.setOnClickListener(connectListener);
+        connectPhones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                serverIpAddress = serverIp.getText().toString();
+                mListener.onConnectTo(serverIpAddress);
+            }
+        });
 
         return view;
     }
-
-    private View.OnClickListener connectListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            serverIpAddress = serverIp.getText().toString();
-            mListener.onConnectTo(serverIpAddress);
-        }
-    };
 
     @Override
     public void onAttach(Activity activity) {

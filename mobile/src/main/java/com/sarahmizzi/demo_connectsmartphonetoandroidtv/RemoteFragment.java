@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,5 +103,4 @@ public class RemoteFragment extends Fragment {
     public interface OnButtonPressedListener {
         public void buttonPressed(String s);
     }
-
 }

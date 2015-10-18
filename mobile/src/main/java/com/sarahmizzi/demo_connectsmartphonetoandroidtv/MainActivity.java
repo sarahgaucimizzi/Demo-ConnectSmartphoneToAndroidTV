@@ -12,7 +12,7 @@ import java.net.Socket;
 public class MainActivity extends Activity implements ConnectFragment.OnConnectListener, RemoteFragment.OnButtonPressedListener{
     public static final int SERVERPORT = 8080;
     private boolean connected = false;
-    String serverIpAddress;
+    String serverIpAddress = "";
     String command = "";
     Socket mSocket;
 
@@ -22,7 +22,7 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
         setContentView(R.layout.activity_main);
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.container, new RemoteFragment(), "connectFragment")
+                .replace(R.id.container, new ConnectFragment(), "connectFragment")
                 .commit();
     }
 
@@ -34,14 +34,16 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                 Log.d("ClientActivity", "C: Connecting...");
                 mSocket = new Socket(serverAddr, SERVERPORT);
                 connected = true;
-                while (connected) {
+                if (connected) {
                     getFragmentManager().beginTransaction()
                             .replace(R.id.container, new RemoteFragment(), "remoteFragment")
                             .commit();
 
                 }
-                mSocket.close();
-                Log.d("ClientActivity", "C: Closed.");
+                if(!connected) {
+                    mSocket.close();
+                    Log.d("ClientActivity", "C: Closed.");
+                }
             } catch (Exception e) {
                 ConnectFragment connectFragment = (ConnectFragment) getFragmentManager().findFragmentByTag("connectFragment");
 

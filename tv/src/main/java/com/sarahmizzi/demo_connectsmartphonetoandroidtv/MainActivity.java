@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class MainActivity extends Activity implements ConnectFragment.OnConnectListener {
     public static final int SERVERPORT = 8080;
-    public static String SERVERIP;
+    public static String SERVERIP = null;
     private Handler handler = new Handler();
     private ServerSocket serverSocket;
 
@@ -113,7 +113,8 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                             connectFragment = (ConnectFragment) getFragmentManager().findFragmentByTag("connectFragment");
                         }
                         if(connectFragment != null) {
-                            connectFragment.updateText("Error");
+                            connectFragment.updateText("Error "+ e.getMessage());
+                            Log.e("Server Activity", e.getMessage(), e);
                         }
                     }
                 });

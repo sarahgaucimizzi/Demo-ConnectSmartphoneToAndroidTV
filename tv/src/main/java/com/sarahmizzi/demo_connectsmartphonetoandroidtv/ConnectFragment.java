@@ -50,6 +50,7 @@ public class ConnectFragment extends Fragment {
                         if(ip != null){
                             mServerStatusTextView.setText(ip);
                             mListener.onConnectDevices(ip);
+                            break;
                         }
                         else{
                             mServerStatusTextView.setText("Couldn't detect internet connection.");
