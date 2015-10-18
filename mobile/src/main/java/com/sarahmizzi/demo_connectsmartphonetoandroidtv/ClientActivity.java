@@ -37,7 +37,6 @@ public class ClientActivity extends Activity {
         connectPhones = (Button) findViewById(R.id.connect_phones);
         connectPhones.setOnClickListener(connectListener);
         serverMessage = (EditText) findViewById(R.id.server_message);
-        sendMessage = (Button) findViewById(R.id.send_message);
     }
 
     private View.OnClickListener connectListener = new View.OnClickListener() {

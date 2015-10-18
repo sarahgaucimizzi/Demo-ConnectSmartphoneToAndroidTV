@@ -3,8 +3,12 @@
     android:layout_height="match_parent"
     tools:context="com.sarahmizzi.demo_connectsmartphonetoandroidtv.ConnectFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/server_status"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textSize="50sp"/>
 
 </FrameLayout>
