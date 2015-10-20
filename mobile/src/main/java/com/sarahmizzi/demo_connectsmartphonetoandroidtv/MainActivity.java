@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -40,10 +41,6 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                             .commit();
 
                 }
-                if(!connected) {
-                    mSocket.close();
-                    Log.d("ClientActivity", "C: Closed.");
-                }
             } catch (Exception e) {
                 ConnectFragment connectFragment = (ConnectFragment) getFragmentManager().findFragmentByTag("connectFragment");
 
@@ -56,7 +53,7 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                 }
 
                 if(connectFragment != null){
-                    connectFragment.showSnackbar("Error: Something went very very wrong.");
+                    connectFragment.showToast("Error: Something went very very wrong.");
                 }
                 connected = false;
             }
@@ -77,29 +74,46 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
     @Override
     public void buttonPressed(String s) {
         command = s;
-        if(connected){
-            try {
-                Log.d("ClientActivity", "C: Sending command.");
-                PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream())), true);
-                // Issue Commands
-                if(!command.equals("")) {
-                    out.println(command);
-                    Log.d("ClientActivity", "C: Sent.");
+        if(s.equals("EXIT")){
+            if(mSocket != null) {
+                try {
+                    mSocket.close();
+                } catch (IOException e) {
+                    Log.e("ClientActivity", e.getMessage());
                 }
-            } catch (Exception e) {
-                Log.e("ClientActivity", "S: Error" + e.getMessage(), e);
-                RemoteFragment remoteFragment = (RemoteFragment) getFragmentManager().findFragmentByTag("remoteFragment");
+                connected = false;
+                Log.d("ClientActivity", "C: Closed.");
 
-                if(remoteFragment == null){
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.container, new RemoteFragment(), "remoteFragment")
-                            .commit();
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, new ConnectFragment(), "connectFragment")
+                        .commit();
+            }
+        }
+        else {
+            if (connected) {
+                try {
+                    Log.d("ClientActivity", "C: Sending command.");
+                    PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream())), true);
+                    // Issue Commands
+                    if (!command.equals("")) {
+                        out.println(command);
+                        Log.d("ClientActivity", "C: Sent.");
+                    }
+                } catch (Exception e) {
+                    Log.e("ClientActivity", "S: Error" + e.getMessage(), e);
+                    RemoteFragment remoteFragment = (RemoteFragment) getFragmentManager().findFragmentByTag("remoteFragment");
 
-                    remoteFragment = (RemoteFragment) getFragmentManager().findFragmentByTag("remoteFragment");
-                }
+                    if (remoteFragment == null) {
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.container, new RemoteFragment(), "remoteFragment")
+                                .commit();
 
-                if(remoteFragment != null){
-                    remoteFragment.showSnackbar("S: Error" + e.getMessage());
+                        remoteFragment = (RemoteFragment) getFragmentManager().findFragmentByTag("remoteFragment");
+                    }
+
+                    if (remoteFragment != null) {
+                        remoteFragment.showToast("S: Error" + e.getMessage());
+                    }
                 }
             }
         }

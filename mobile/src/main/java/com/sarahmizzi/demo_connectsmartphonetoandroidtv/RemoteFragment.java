@@ -1,16 +1,14 @@
 package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 public class RemoteFragment extends Fragment {
     private ImageButton mButtonUp;
@@ -18,6 +16,7 @@ public class RemoteFragment extends Fragment {
     private ImageButton mButtonLeft;
     private ImageButton mButtonRight;
     private ImageButton mButtonOK;
+    private Button mButtonExit;
 
     private OnButtonPressedListener mListener;
 
@@ -40,6 +39,8 @@ public class RemoteFragment extends Fragment {
         mButtonLeft = (ImageButton) view.findViewById(R.id.remote_left_button);
         mButtonRight = (ImageButton) view.findViewById(R.id.remote_right_button);
         mButtonOK = (ImageButton) view.findViewById(R.id.remote_ok_button);
+        mButtonExit = (Button) view.findViewById(R.id.remote_exit_button);
+
 
         mButtonUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +77,13 @@ public class RemoteFragment extends Fragment {
             }
         });
 
+        mButtonExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.buttonPressed("EXIT");
+            }
+        });
+
         return view;
     }
 
@@ -96,8 +104,8 @@ public class RemoteFragment extends Fragment {
         mListener = null;
     }
 
-    public void showSnackbar(String s){
-        Snackbar.make(mButtonDown, s, Snackbar.LENGTH_LONG).show();
+    public void showToast(String s){
+        Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_LONG).show();
     }
 
     public interface OnButtonPressedListener {

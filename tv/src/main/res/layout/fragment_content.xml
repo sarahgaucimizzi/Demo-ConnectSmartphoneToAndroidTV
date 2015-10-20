@@ -1,12 +1,27 @@
-<ScrollView
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
 
-        <TextView android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="436dp">
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/bacon_ipsum"
-            android:textSize="30sp"
-            android:padding="30dp"/>
+            android:padding="30dp"
+            android:textSize="30sp" />
 
-</ScrollView>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="119dp"
+        android:layout_height="wrap_content"
+        android:text="@string/ok"
+        android:layout_gravity="end"/>
+
+</LinearLayout>

@@ -1,15 +1,14 @@
 package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class ConnectFragment extends Fragment {
     private EditText serverIp;
@@ -62,8 +61,8 @@ public class ConnectFragment extends Fragment {
         mListener = null;
     }
 
-    public void showSnackbar(String s){
-        Snackbar.make(connectPhones, s, Snackbar.LENGTH_LONG).show();
+    public void showToast(String s){
+        Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_LONG).show();
     }
 
     public interface OnConnectListener {
