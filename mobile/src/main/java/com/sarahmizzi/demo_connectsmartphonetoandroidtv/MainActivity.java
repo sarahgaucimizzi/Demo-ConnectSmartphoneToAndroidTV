@@ -53,7 +53,7 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                 }
 
                 if(connectFragment != null){
-                    connectFragment.showToast("Error: Something went very very wrong.");
+                    Log.e("ClientActivity", "Error: Something went very very wrong." + e.getMessage());
                 }
                 connected = false;
             }
@@ -112,7 +112,7 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                     }
 
                     if (remoteFragment != null) {
-                        remoteFragment.showToast("S: Error" + e.getMessage());
+                        Log.e("ClientActivity", "S: Error" + e.getMessage());
                     }
                 }
             }

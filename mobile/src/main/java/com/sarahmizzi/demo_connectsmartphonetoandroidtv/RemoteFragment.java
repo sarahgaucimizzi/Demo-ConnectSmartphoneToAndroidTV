@@ -104,10 +104,6 @@ public class RemoteFragment extends Fragment {
         mListener = null;
     }
 
-    public void showToast(String s){
-        Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_LONG).show();
-    }
-
     public interface OnButtonPressedListener {
         public void buttonPressed(String s);
     }

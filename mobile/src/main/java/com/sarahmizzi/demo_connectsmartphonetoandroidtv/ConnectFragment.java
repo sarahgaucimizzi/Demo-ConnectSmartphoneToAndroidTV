@@ -61,10 +61,6 @@ public class ConnectFragment extends Fragment {
         mListener = null;
     }
 
-    public void showToast(String s){
-        Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_LONG).show();
-    }
-
     public interface OnConnectListener {
         public void onConnectTo(String ip);
     }

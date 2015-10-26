@@ -47,16 +47,21 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                             }
                         });
 
-                        handler.postDelayed(new Runnable() {
+                        if(!serverSocket.isClosed()) {
+                            listenForCommand();
+                        }
+
+                        /*handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if(serverSocket != null) {
+                                if(!serverSocket.isClosed()) {
                                     listenForCommand();
-                                    handler.postDelayed(this, 500);
+                                    handler.postDelayed(this, 5000);
                                 }
                             }
-                        }, 500);
+                        }, 5000);*/
 
+                        break;
                     }
                 }
             } catch (final Exception e) {
@@ -72,7 +77,7 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                             connectFragment = (ConnectFragment) getFragmentManager().findFragmentByTag("connectFragment");
                         }
                         if(connectFragment != null) {
-                            connectFragment.updateText("Error "+ e.getMessage());
+                            connectFragment.updateText("Error " + e.getMessage());
                             Log.e("Server Activity", e.getMessage(), e);
                         }
                     }
@@ -114,33 +119,37 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                         switch (line){
                             case "UP":
                                 dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_UP));
+                                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_UP));
                                 break;
 
                             case "DOWN":
                                 dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_DOWN));
+                                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_DOWN));
                                 break;
 
                             case "LEFT":
                                 dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT));
+                                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_LEFT));
                                 break;
 
                             case "RIGHT":
                                 dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT));
+                                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_RIGHT));
                                 break;
 
                             case "OK":
                                 dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
                                 break;
 
                             case "EXIT":
-                                if (serverSocket != null) {
+                                if (!serverSocket.isClosed()) {
                                     try {
                                         serverSocket.close();
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
                                 }
-                                serverSocket = null;
 
                                 getFragmentManager().beginTransaction()
                                         .replace(R.id.container, new ConnectFragment(), "connectFragment")
@@ -168,6 +177,10 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                 }
             });
             e.printStackTrace();
+        }
+
+        if(!serverSocket.isClosed()) {
+            listenForCommand();
         }
     }
 }
