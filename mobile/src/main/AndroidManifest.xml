@@ -13,21 +13,6 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".NSDActivity"
-            android:label="@string/title_activity_nsd"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".Client"
-            android:label="@string/title_activity_client"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".ClientActivity"
-            android:label="@string/title_activity_client"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait">

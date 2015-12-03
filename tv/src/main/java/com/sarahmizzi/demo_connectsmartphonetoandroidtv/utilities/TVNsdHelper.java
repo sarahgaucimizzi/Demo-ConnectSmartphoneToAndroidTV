@@ -1,4 +1,4 @@
-package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
+package com.sarahmizzi.demo_connectsmartphonetoandroidtv.utilities;
 
 /*
     Tutorial: http://developer.android.com/training/connect-devices-wirelessly/nsd.html
@@ -8,6 +8,8 @@ import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
+
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.MainActivity;
 
 /**
  * Created by Sarah on 28-Sep-15.
@@ -21,7 +23,7 @@ public class TVNsdHelper {
     private static final String SERVICE_TYPE = "_http._tcp.";
 
     public static final String TAG = MainActivity.class.getSimpleName();
-    public String mServiceName = "TV";
+    public String mServiceName = "Wemote";
 
 
     public TVNsdHelper(Context context){
@@ -44,6 +46,8 @@ public class TVNsdHelper {
             public void onServiceRegistered(NsdServiceInfo serviceInfo) {
                 mServiceName = serviceInfo.getServiceName();
                 Log.d(TAG, "Service registered: " + serviceInfo.getServiceName());
+                MainActivity mainActivity = new MainActivity();
+                mainActivity.startThread();
             }
 
             @Override

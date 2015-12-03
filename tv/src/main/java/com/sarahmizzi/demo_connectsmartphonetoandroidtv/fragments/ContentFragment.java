@@ -1,4 +1,4 @@
-package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
+package com.sarahmizzi.demo_connectsmartphonetoandroidtv.fragments;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.R;
 
 
 public class ContentFragment extends Fragment {

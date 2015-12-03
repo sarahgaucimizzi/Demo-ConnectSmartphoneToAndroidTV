@@ -1,4 +1,4 @@
-package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
+package com.sarahmizzi.demo_connectsmartphonetoandroidtv.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,12 +10,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.R;
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.utilities.MobileNsdHelper;
+
+import java.net.InetAddress;
+
 public class ConnectFragment extends Fragment {
     private EditText serverIp;
     private Button connectPhones;
     private String serverIpAddress = "";
 
-    private OnConnectListener mListener;
+    private static OnConnectListener mListener;
 
     public ConnectFragment() {
         // Required empty public constructor
@@ -31,17 +36,22 @@ public class ConnectFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_connect, container, false);
-        serverIp = (EditText) view.findViewById(R.id.server_ip);
         connectPhones = (Button) view.findViewById(R.id.connect_phones);
         connectPhones.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                serverIpAddress = serverIp.getText().toString();
-                mListener.onConnectTo(serverIpAddress);
+                MobileNsdHelper nsdHelper = new MobileNsdHelper(getActivity().getBaseContext());
+                nsdHelper.initializeDiscoveryListener();
+                nsdHelper.initializeResolveListener();
+                nsdHelper.discoverServices();
             }
         });
 
         return view;
+    }
+
+    public void startConnection(InetAddress host, int port){
+        mListener.onConnectTo(host, port);
     }
 
     @Override
@@ -62,6 +72,6 @@ public class ConnectFragment extends Fragment {
     }
 
     public interface OnConnectListener {
-        public void onConnectTo(String ip);
+        public void onConnectTo(InetAddress host, int port);
     }
 }

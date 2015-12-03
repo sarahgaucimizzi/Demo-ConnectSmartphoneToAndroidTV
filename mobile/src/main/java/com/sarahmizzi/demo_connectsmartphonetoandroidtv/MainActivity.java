@@ -3,6 +3,10 @@ package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
+
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.fragments.ConnectFragment;
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.fragments.RemoteFragment;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -11,11 +15,12 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 public class MainActivity extends Activity implements ConnectFragment.OnConnectListener, RemoteFragment.OnButtonPressedListener{
-    public static final int SERVERPORT = 8080;
     private boolean connected = false;
-    String serverIpAddress = "";
+    InetAddress serverIpAddress;
+    int port;
     String command = "";
     Socket mSocket;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +36,9 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
         @Override
         public void run() {
             try {
-                InetAddress serverAddr = InetAddress.getByName(serverIpAddress);
+                //InetAddress serverAddr = InetAddress.getByName(serverIpAddress);
                 Log.d("ClientActivity", "C: Connecting...");
-                mSocket = new Socket(serverAddr, SERVERPORT);
+                mSocket = new Socket(serverIpAddress, port);
                 connected = true;
                 if (connected) {
                     getFragmentManager().beginTransaction()
@@ -61,10 +66,11 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
     }
 
     @Override
-    public void onConnectTo(String ip) {
-        serverIpAddress = ip;
+    public void onConnectTo(InetAddress host, int port) {
+        serverIpAddress = host;
+        this.port = port;
         if (!connected) {
-            if (!serverIpAddress.equals("")) {
+            if (host != null) {
                 Thread cThread = new Thread(new ClientThread());
                 cThread.start();
             }

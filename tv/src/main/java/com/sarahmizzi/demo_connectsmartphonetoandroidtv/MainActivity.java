@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.fragments.ConnectFragment;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,8 +15,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MainActivity extends Activity implements ConnectFragment.OnConnectListener {
-    public static final int SERVERPORT = 8080;
-    public static String SERVERIP = null;
+    final int PORT = 8080;
     private Handler handler = new Handler();
     private ServerSocket serverSocket;
     public Socket client;
@@ -29,27 +30,34 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                 .commit();
     }
 
+    public void startThread() {
+        Thread thread = new Thread(new ServerThread());
+        thread.start();
+    }
+
     public class ServerThread implements Runnable {
+        public ServerThread() {
+        }
+
         public void run() {
             try {
-                if (SERVERIP != null) {
-                    serverSocket = new ServerSocket(SERVERPORT);
-                    while (true) {
-                        // Listen for incoming clients
-                        client = serverSocket.accept();
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Open content fragment
-                                getFragmentManager().beginTransaction()
-                                        .replace(R.id.container, new ContentFragment())
-                                        .commit();
-                            }
-                        });
-
-                        if(!serverSocket.isClosed()) {
-                            listenForCommand();
+                serverSocket = new ServerSocket(PORT);
+                while (true) {
+                    // Listen for incoming clients
+                    client = serverSocket.accept();
+                    /*handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Open content fragment
+                            getFragmentManager().beginTransaction()
+                                    .replace(R.id.container, new ContentFragment())
+                                    .commit();
                         }
+                    });*/
+
+                    if (!serverSocket.isClosed()) {
+                        listenForCommand();
+                    }
 
                         /*handler.postDelayed(new Runnable() {
                             @Override
@@ -61,22 +69,21 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                             }
                         }, 5000);*/
 
-                        break;
-                    }
+                    break;
                 }
             } catch (final Exception e) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         ConnectFragment connectFragment = (ConnectFragment) getFragmentManager().findFragmentByTag("connectFragment");
-                        if (connectFragment == null){
+                        if (connectFragment == null) {
                             getFragmentManager().beginTransaction()
                                     .replace(R.id.container, new ConnectFragment(), "connectFragment")
                                     .commit();
 
                             connectFragment = (ConnectFragment) getFragmentManager().findFragmentByTag("connectFragment");
                         }
-                        if(connectFragment != null) {
+                        if (connectFragment != null) {
                             connectFragment.updateText("Error " + e.getMessage());
                             Log.e("Server Activity", e.getMessage(), e);
                         }
@@ -101,12 +108,12 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
 
     @Override
     public void onConnectDevices(String serverIP) {
-        SERVERIP = serverIP;
+        //SERVERIP = serverIP;
         Thread thread = new Thread(new ServerThread());
         thread.start();
     }
 
-    public void listenForCommand(){
+    public void listenForCommand() {
         try {
             // Listen for remote commands and execute them
             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -116,7 +123,7 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        switch (line){
+                        switch (line) {
                             case "UP":
                                 dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_UP));
                                 dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_UP));
@@ -164,14 +171,14 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
                 @Override
                 public void run() {
                     ConnectFragment connectFragment = (ConnectFragment) getFragmentManager().findFragmentByTag("connectFragment");
-                    if (connectFragment == null){
+                    if (connectFragment == null) {
                         getFragmentManager().beginTransaction()
                                 .replace(R.id.container, new ConnectFragment(), "connectFragment")
                                 .commit();
 
                         connectFragment = (ConnectFragment) getFragmentManager().findFragmentByTag("connectFragment");
                     }
-                    if(connectFragment != null) {
+                    if (connectFragment != null) {
                         connectFragment.updateText("Oops. Connection interrupted. Please reconnect your devices. " + e.getMessage());
                     }
                 }
@@ -179,7 +186,7 @@ public class MainActivity extends Activity implements ConnectFragment.OnConnectL
             e.printStackTrace();
         }
 
-        if(!serverSocket.isClosed()) {
+        if (!serverSocket.isClosed()) {
             listenForCommand();
         }
     }

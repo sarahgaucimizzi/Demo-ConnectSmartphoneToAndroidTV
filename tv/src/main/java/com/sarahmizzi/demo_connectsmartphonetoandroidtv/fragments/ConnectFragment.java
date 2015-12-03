@@ -1,4 +1,4 @@
-package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
+package com.sarahmizzi.demo_connectsmartphonetoandroidtv.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -9,13 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.R;
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.utilities.TVNsdHelper;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
 public class ConnectFragment extends Fragment {
-
+    final int PORT = 8080;
     private OnConnectListener mListener;
     private TextView mServerStatusTextView;
 
@@ -34,7 +38,11 @@ public class ConnectFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_connect, container, false);
         mServerStatusTextView = (TextView) view.findViewById(R.id.server_status);
 
-        getLocalIpAddress();
+        //getLocalIpAddress();
+
+        TVNsdHelper nsdHelper = new TVNsdHelper(getActivity().getBaseContext());
+        nsdHelper.initializeRegistrationListener();
+        nsdHelper.registerService(PORT);
 
         return view;
     }

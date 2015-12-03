@@ -1,4 +1,4 @@
-package com.sarahmizzi.demo_connectsmartphonetoandroidtv;
+package com.sarahmizzi.demo_connectsmartphonetoandroidtv.utilities;
 
 /*
     Tutorial: http://developer.android.com/training/connect-devices-wirelessly/nsd.html
@@ -9,33 +9,26 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.fragments.ConnectFragment;
+import com.sarahmizzi.demo_connectsmartphonetoandroidtv.MainActivity;
+
 /**
  * Created by Sarah on 22-Sep-15.
  */
 public class MobileNsdHelper {
-    Context mContext;
+    public final String TAG = MainActivity.class.getSimpleName();
+    public final String SERVICE_TYPE = "_http._tcp.";
+    public String mServiceName = "Wemote";
+    public NsdServiceInfo mService;
 
+    Context mContext;
     NsdManager mNsdManager;
     NsdManager.ResolveListener mResolveListener;
     NsdManager.DiscoveryListener mDiscoveryListener;
-    NsdManager.RegistrationListener mRegistrationListener;
-
-    public static final String SERVICE_TYPE = "_http._tcp.";
-
-    public static final String TAG = MainActivity.class.getSimpleName();
-    public String mServiceName = "Client Device - Mobile";
-
-    NsdServiceInfo mService;
 
     public MobileNsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-    }
-
-    public void initializeNsd() {
-        initializeResolveListener();
-        initializeDiscoveryListener();
-        initializeRegistrationListener();
     }
 
     public void initializeDiscoveryListener() {
@@ -51,26 +44,26 @@ public class MobileNsdHelper {
                 Log.d(TAG, "Service discovery success" + service);
                 if (!service.getServiceType().equals(SERVICE_TYPE)) {
                     Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
-                } else if (service.getServiceName().equals(mServiceName)) {
+                }
+                /*else if (service.getServiceName().equals(mServiceName)) {
                     Log.d(TAG, "Same machine: " + mServiceName);
-                } else if (service.getServiceName().contains(mServiceName)){
+                } */
+                else if (service.getServiceName().contains(mServiceName)){
                     mNsdManager.resolveService(service, mResolveListener);
                 }
 
                 // Update list
-                if((!NSDActivity.mDeviceList.contains(service.getServiceName())) && (!service.getServiceName().equals(mServiceName))) {
+                /*if((!NSDActivity.mDeviceList.contains(service.getServiceName())) && (!service.getServiceName().equals(mServiceName))) {
                     NSDActivity.mDeviceList.add(service.getServiceName());
-                }
+                }*/
             }
 
             @Override
             public void onServiceLost(NsdServiceInfo service) {
                 Log.e(TAG, "service lost" + service);
-                if (mService == service) {
-                    mService = null;
-                }
+                mService = service;
                 // Update list
-                NSDActivity.mDeviceList.remove(NSDActivity.mDeviceList.indexOf(service.getServiceName()));
+                //NSDActivity.mDeviceList.remove(NSDActivity.mDeviceList.indexOf(service.getServiceName()));
             }
 
             @Override
@@ -106,45 +99,12 @@ public class MobileNsdHelper {
 
                 if (serviceInfo.getServiceName().equals(mServiceName)) {
                     Log.d(TAG, "Same IP.");
-                    return;
                 }
                 mService = serviceInfo;
+                ConnectFragment connectFragment = new ConnectFragment();
+                connectFragment.startConnection(serviceInfo.getHost(), serviceInfo.getPort());
             }
         };
-    }
-
-    public void initializeRegistrationListener() {
-        mRegistrationListener = new NsdManager.RegistrationListener() {
-
-            @Override
-            public void onServiceRegistered(NsdServiceInfo NsdServiceInfo) {
-                mServiceName = NsdServiceInfo.getServiceName();
-            }
-
-            @Override
-            public void onRegistrationFailed(NsdServiceInfo arg0, int arg1) {
-            }
-
-            @Override
-            public void onServiceUnregistered(NsdServiceInfo arg0) {
-            }
-
-            @Override
-            public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-            }
-
-        };
-    }
-
-    public void registerService(int port) {
-        NsdServiceInfo serviceInfo  = new NsdServiceInfo();
-        serviceInfo.setPort(port);
-        serviceInfo.setServiceName(mServiceName);
-        serviceInfo.setServiceType(SERVICE_TYPE);
-
-        mNsdManager.registerService(
-                serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
-
     }
 
     public void discoverServices() {
@@ -161,7 +121,6 @@ public class MobileNsdHelper {
     }
 
     public void tearDown() {
-        mNsdManager.unregisterService(mRegistrationListener);
         stopDiscovery();
     }
 }
